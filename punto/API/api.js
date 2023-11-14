@@ -15,9 +15,10 @@ app.listen(port, () => {
 });
 
 
-app.get('/cum', (req, res) => {
-    res.send('lalalalalalouli');
-    });
+app.get('/route1', (req, res) => {
+  res.send('lalalalalalouli');
+});
+
 
 
 
