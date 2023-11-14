@@ -40,11 +40,11 @@ const DEFAULT_STATE = () => {
   }
 
   return {
-    n_players: 2,
+    n_players: 4,
     cur_player: 0,
-    player_color: ["red", "cyan"],
-    player_deck: [shuffle([...DECK]), shuffle([...DECK])],
-    player_scores: [[], []],
+    player_color: ["red", "cyan", "green", "yellow"],
+    player_deck: [shuffle([...DECK]), shuffle([...DECK]), shuffle([...DECK]), shuffle([...DECK])],
+    player_scores: [[], [], [], []],
     plays: [],
 
     // board on screen
