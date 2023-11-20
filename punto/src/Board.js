@@ -18,7 +18,7 @@ function Board ({ board: { dimx, dimy, board }, player_color, onClick }) {
         <Card
           card={card}
           color={
-            player === -1 ? "white" : player_color[player]
+            player === -1 ? "rgb(63, 60, 60)" : player_color[player]
           }
           x={x}
           y={y}

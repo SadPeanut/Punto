@@ -14,13 +14,13 @@
 }
 
 .card.show > .cardContent {
-  background-color: black;
+  background-color: rgb(29, 29, 29);
   font-size: 1.6em;
 }
 
 .card.open > .cardContent {
-  background-color: rgb(220, 220, 220);
-  color: rgb(220, 220, 220);
+  background-color: rgb(143, 143, 143);
+  color: rgb(143, 143, 143);
   cursor: pointer;
 
   transition: width 0.2s, height 0.2s, outline 0.2s;

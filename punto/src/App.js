@@ -6,6 +6,8 @@ import Card from "./Card.js";
 import Board from "./Board.js";
 import Scoreboard from "./Scoreboard.js";
 
+//import sendWinnerId from "./API/apiFunctions.js";
+
 const {
   coord1d2d,
   coord2d1d,
@@ -105,11 +107,30 @@ class App extends Component {
     this.setState({ player_decks: decks });
   }
 
-  next_round = () => {
+  next_round = async () => {
     const scores = this.state.player_scores;
-    this.setState(DEFAULT_STATE(), () =>
-      this.setState({ player_scores: scores }, this.setup)
-    );
+
+  
+    try {
+      this.setState(DEFAULT_STATE(), async () => {
+        this.setState({ player_scores: scores }, async () => {
+          this.setup();
+  
+          // Utilisez la fonction sendWinnerId pour envoyer l'ID du gagnant
+          /*
+          try {
+            const data = await sendWinnerId("culm");
+            // Traitement éventuel de la réponse du serveur
+            console.log(data);
+          } catch (error) {
+            console.error('Error in sendWinnerId:', error);
+          }
+          */
+        });
+      });
+    } catch (error) {
+      console.error('Error in next_round:', error);
+    }
   };
 
   mk_board() {
@@ -539,7 +560,7 @@ class App extends Component {
           
           <div className="next_card" style={{ width: board_dimx + "px" }}>
             <div>
-              <h4>Joueur {cur_player}</h4>
+              <h4 style={{ color: 'white' }}>Joueur {cur_player}</h4>
             </div>
             <Card card={cur_card} color={cur_color} kind="show" />
           </div>
