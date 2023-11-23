@@ -8,6 +8,33 @@ import Scoreboard from "./Scoreboard.js";
 
 //import sendWinnerId from "./API/apiFunctions.js";
 
+
+// Fonction pour envoyer les données vers la route /Partie
+const sendGameData = async (data) => {
+  console.log("data sendGameData", data)
+  try {
+    const response = await fetch('http://localhost:5000/Partie', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      
+      body: JSON.stringify(data),
+    });
+    console.log("JSON", JSON.stringify(data))
+
+    if (response.ok) {
+      console.log('Données envoyées avec succès');
+      // Réinitialiser l'état ou effectuer d'autres actions nécessaires après l'envoi des données
+    } else {
+      console.error('Erreur lors de l\'envoi des données');
+    }
+  } catch (error) {
+    console.error('Erreur:', error);
+  }
+};
+
+
 const {
   coord1d2d,
   coord2d1d,
@@ -110,22 +137,24 @@ class App extends Component {
   next_round = async () => {
     const scores = this.state.player_scores;
 
-  
+    const gameData = {
+      id_joueur_gagnant: this.state.cur_player,
+      manches_gagnees: this.state.player_scores[this.state.cur_player].length,
+      points_joueur1: this.state.player_scores[0].reduce((a, b) => a + b, 0),
+      points_joueur2: this.state.player_scores[1].reduce((a, b) => a + b, 0),
+      points_joueur3: this.state.player_scores[2].reduce((a, b) => a + b, 0),
+      points_joueur4: this.state.player_scores[3].reduce((a, b) => a + b, 0),
+    };
+
+
+    if (gameData.manches_gagnees === 2) {
+      sendGameData(gameData);
+      console.log(gameData);
+    }
     try {
       this.setState(DEFAULT_STATE(), async () => {
         this.setState({ player_scores: scores }, async () => {
           this.setup();
-  
-          // Utilisez la fonction sendWinnerId pour envoyer l'ID du gagnant
-          /*
-          try {
-            const data = await sendWinnerId("culm");
-            // Traitement éventuel de la réponse du serveur
-            console.log(data);
-          } catch (error) {
-            console.error('Error in sendWinnerId:', error);
-          }
-          */
         });
       });
     } catch (error) {
