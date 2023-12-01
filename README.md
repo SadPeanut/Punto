@@ -51,7 +51,7 @@ Dans votre éditeur de code, clonez le dépôt dans le répertoire de votre choi
 ```bash
 git clone https://github.com/SadPeanut/Punto.git 
 ```
-Toutes les commandes restantes seront exécutées depuis un terminal ouvert en ```/Punto/punto```
+Toutes les commandes restantes seront exécutées depuis un terminal ouvert en ```/punto```
 
 Installez l'application :
 ```bash
