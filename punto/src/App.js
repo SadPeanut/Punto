@@ -37,7 +37,7 @@ const {
   coord2d1d,
   shuffle,
   rmfirstocc,
-  BOARD_DIM,
+  TAILLE_TABLEAU,
   DECK,
   TAILLE_DECK,
 } = Global;
@@ -54,13 +54,13 @@ function no_card (x, y) {
 
 const DEFAULT_STATE = () => {
   const empty_board = [];
-  for (var i = 0; i < (BOARD_DIM + 1) * (BOARD_DIM + 1); i++) {
-    const { x, y } = coord1d2d(i, BOARD_DIM + 1, BOARD_DIM + 1);
+  for (var i = 0; i < (TAILLE_TABLEAU + 1) * (TAILLE_TABLEAU + 1); i++) {
+    const { x, y } = coord1d2d(i, TAILLE_TABLEAU + 1, TAILLE_TABLEAU + 1);
     empty_board.push({
       card: -1,
       player: -1,
-      x: x - Math.trunc(BOARD_DIM / 2),
-      y: y - Math.trunc(BOARD_DIM / 2),
+      x: x - Math.trunc(TAILLE_TABLEAU / 2),
+      y: y - Math.trunc(TAILLE_TABLEAU / 2),
       kind: "hidden",
     });
   }
@@ -75,10 +75,10 @@ const DEFAULT_STATE = () => {
 
     // board on screen
     board: {
-      dimx: BOARD_DIM + 1,
-      dimy: BOARD_DIM + 1,
-      minx: -Math.trunc(BOARD_DIM / 2) - 1,
-      miny: -Math.trunc(BOARD_DIM / 2) - 1,
+      dimx: TAILLE_TABLEAU + 1,
+      dimy: TAILLE_TABLEAU + 1,
+      minx: -Math.trunc(TAILLE_TABLEAU / 2) - 1,
+      miny: -Math.trunc(TAILLE_TABLEAU / 2) - 1,
       board: empty_board,
     },
 
@@ -187,16 +187,16 @@ class App extends Component {
     const board_width = maxx - minx;
     const board_height = maxy - miny;
 
-    const actual_dimx = board_width < BOARD_DIM ? BOARD_DIM + 1 : BOARD_DIM;
-    const actual_dimy = board_height < BOARD_DIM ? BOARD_DIM + 1 : BOARD_DIM;
+    const actual_dimx = board_width < TAILLE_TABLEAU ? TAILLE_TABLEAU + 1 : TAILLE_TABLEAU;
+    const actual_dimy = board_height < TAILLE_TABLEAU ? TAILLE_TABLEAU + 1 : TAILLE_TABLEAU;
 
     const empty_left_size =
-      board_width < BOARD_DIM
-        ? Math.trunc((BOARD_DIM - board_width) / 2) + 1
+      board_width < TAILLE_TABLEAU
+        ? Math.trunc((TAILLE_TABLEAU - board_width) / 2) + 1
         : 0;
     const empty_top_size =
-      board_height < BOARD_DIM
-        ? Math.trunc((BOARD_DIM - board_height) / 2) + 1
+      board_height < TAILLE_TABLEAU
+        ? Math.trunc((TAILLE_TABLEAU - board_height) / 2) + 1
         : 0;
 
     const actual_minx = minx - empty_left_size;
