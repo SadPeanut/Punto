@@ -17,7 +17,6 @@ class Global {
   }
 
 
-
   static coord1d2d(idx, dimx, dimy) {
     return {
       x: idx % dimx,
