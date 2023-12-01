@@ -10,22 +10,19 @@ import Scoreboard from "./Scoreboard.js";
 
 
 // Fonction pour envoyer les données vers la route /Partie
-const sendGameData = async (data) => {
-  console.log("data sendGameData", data)
+const sendGameData = async (data, dataBase) => {
+  console.log("data sendGameData", data, dataBase)
   try {
     const response = await fetch('http://localhost:5000/Partie', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      
-      body: JSON.stringify(data),
+      body: JSON.stringify({ data, dataBase }), // Inclure le type de base de données
     });
-    console.log("JSON", JSON.stringify(data))
 
     if (response.ok) {
       console.log('Données envoyées avec succès');
-      // Réinitialiser l'état ou effectuer d'autres actions nécessaires après l'envoi des données
     } else {
       console.error('Erreur lors de l\'envoi des données');
     }
@@ -101,7 +98,7 @@ const DEFAULT_STATE = () => {
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = DEFAULT_STATE();
+    this.state = { ...DEFAULT_STATE(), selectedDataBase: "MongoDB", nbTours: 0 };
   }
 
   componentDidMount() {
@@ -135,22 +132,40 @@ class App extends Component {
   }
 
   next_round = async () => {
+
+    console.log("next round")
     const scores = this.state.player_scores;
+
+    const {nbTours} = this.state;
+    const nbToursPlusUn = nbTours + 1;
+    this.setState({nbTours: nbToursPlusUn});
 
     const gameData = {
       id_joueur_gagnant: this.state.cur_player,
       manches_gagnees: this.state.player_scores[this.state.cur_player].length,
+      nbTours: nbToursPlusUn,
       points_joueur1: this.state.player_scores[0].reduce((a, b) => a + b, 0),
       points_joueur2: this.state.player_scores[1].reduce((a, b) => a + b, 0),
       points_joueur3: this.state.player_scores[2].reduce((a, b) => a + b, 0),
       points_joueur4: this.state.player_scores[3].reduce((a, b) => a + b, 0),
     };
+    this.setup()
+
+    console.log(gameData)
 
 
     if (gameData.manches_gagnees === 2) {
-      sendGameData(gameData);
-      console.log(gameData);
+      sendGameData(gameData, this.state.selectedDataBase)
+        .then(() => {
+          // Si les données sont envoyées avec succès, réinitialise les scores
+          const emptyScores = [[], [], [], []];
+          this.setState({ player_scores: emptyScores });
+        })
+        .catch((error) => {
+          console.error('Erreur lors de l\'envoi des données :', error);
+        });
     }
+
     try {
       this.setState(DEFAULT_STATE(), async () => {
         this.setState({ player_scores: scores }, async () => {
@@ -560,11 +575,17 @@ class App extends Component {
     const cur_player = this.get_cur_player();
     const cur_card = this.get_cur_card();
     const cur_color = this.state.player_color[cur_player];
+    const { selectedDataBase } = this.state;
     return (
       <div className="punto">
         <header>
           <div className="menu">
             <input type="button" value="Réinitialiser" onClick={this.reset}/>
+            <select value={selectedDataBase} onChange={(e) => this.setState({ selectedDataBase: e.target.value })}>
+              <option value="MongoDB">MongoDB</option>
+              <option value="MySQL">MySQL</option>
+              <option value="SQLite">SQLite</option>
+          </select>
           </div>
         </header>
         {board && (

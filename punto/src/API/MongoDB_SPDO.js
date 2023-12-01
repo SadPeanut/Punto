@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const PartieSchema = new mongoose.Schema({
     id_joueur_gagnant: Number,
     manches_gagnees: Number,
+    nbTours: Number,
     points_joueur1: Number,
     points_joueur2: Number,
     points_joueur3: Number,
