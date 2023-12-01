@@ -8,8 +8,8 @@ import Global from './Global.js'
 function Card ({ card, color, x, y, kind, onClick }) {
   return (
     <div className={`card ${kind}`}
-         style={{ width: Global.CARD_SIZE+"px",
-                  height: Global.CARD_SIZE+"px",
+         style={{ width: Global.TAILLE_DECK+"px",
+                  height: Global.TAILLE_DECK+"px",
                   color }}
          onClick={() => onClick({ x, y })}>
       <div className="cardContent">

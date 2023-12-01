@@ -1,6 +1,6 @@
 class Global {
   static DECK = [9,9,9,9,8,8,8,8,7,7,7,7,6,6,6,6,5,5,5,5,4,4,4,4,3,3,3,3,2,2,2,2,1,1,1,1]
-  static CARD_SIZE = 50
+  static TAILLE_DECK = 50
   static BOARD_DIM = 6
 
   /**
@@ -16,19 +16,7 @@ class Global {
     return a;
   }
 
-  static rmfirstocc(a, v) {
-    var found = true;
-    var i;
-    for (i = 0; i < a.length; i++) {
-      if (a[i] === v) {
-        found = true;
-        break;
-      }
-    }
-    if (found) {
-      return a.filter((v, idx) => idx !== i);
-    } else return a;
-  }
+
 
   static coord1d2d(idx, dimx, dimy) {
     return {

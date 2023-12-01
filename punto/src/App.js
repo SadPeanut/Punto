@@ -39,7 +39,7 @@ const {
   rmfirstocc,
   BOARD_DIM,
   DECK,
-  CARD_SIZE,
+  TAILLE_DECK,
 } = Global;
 
 function no_card (x, y) {
@@ -571,7 +571,7 @@ class App extends Component {
 
   render() {
     const { dimx, board } = this.state.board;
-    const board_dimx = dimx * CARD_SIZE;
+    const board_dimx = dimx * TAILLE_DECK;
     const cur_player = this.get_cur_player();
     const cur_card = this.get_cur_card();
     const cur_color = this.state.player_color[cur_player];

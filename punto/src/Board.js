@@ -7,8 +7,8 @@ import Card from "./Card.js";
 function no_click() { }
 
 function Board ({ board: { dimx, dimy, board }, player_color, onClick }) {
-  const board_dimx = dimx * Global.CARD_SIZE
-  const board_dimy = dimy * Global.CARD_SIZE
+  const board_dimx = dimx * Global.TAILLE_DECK
+  const board_dimy = dimy * Global.TAILLE_DECK
   return <div
     className="board"
     style={{ width: board_dimx + "px", height: board_dimy + "px" }}
