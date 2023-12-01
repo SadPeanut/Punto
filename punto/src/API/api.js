@@ -13,7 +13,7 @@ app.use(cors({ origin: 'http://localhost:3000' }));
 
 
 app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`)
+    console.log(`API Punto listening at http://localhost:${port}`)
 });
 
 app.post('/Partie', async (req, res) => {
