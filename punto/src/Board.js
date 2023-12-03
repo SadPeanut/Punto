@@ -6,6 +6,18 @@ import Card from "./Card.js";
 
 function no_click() { }
 
+
+/**
+ * Composant représentant le plateau de jeu.
+ * @param {object} props - Les propriétés du plateau.
+ * @param {object} props.board - Les informations sur le plateau.
+ * @param {number} props.board.dimx - La dimension X du plateau.
+ * @param {number} props.board.dimy - La dimension Y du plateau.
+ * @param {object[]} props.board.board - Le tableau représentant le plateau.
+ * @param {string[]} props.player_color - Les couleurs des joueurs.
+ * @param {function} props.onClick - La fonction de clic.
+ * @returns {JSX.Element} La représentation JSX du plateau de jeu.
+ */
 function Board ({ board: { dimx, dimy, board }, player_color, onClick }) {
   const board_dimx = dimx * Global.TAILLE_DECK
   const board_dimy = dimy * Global.TAILLE_DECK

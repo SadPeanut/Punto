@@ -6,6 +6,14 @@ import './Scoreboard.css'
 
 import Card from "./Card.js";
 
+/**
+ * Composant représentant le tableau des scores des joueurs.
+ * @param {object} props - Les propriétés du tableau des scores.
+ * @param {number[][]} props.player_scores - Les scores des joueurs.
+ * @param {string[]} props.player_color - Les couleurs des joueurs.
+ * @param {number} props.width - La largeur du tableau des scores.
+ * @returns {JSX.Element|null} La représentation JSX du tableau des scores ou null s'il est vide.
+ */
 function Scoreboard({ player_scores, player_color, width }) {
   const { fontSize1, ref1 } = useFitText();
   const { fontSize2, ref2 } = useFitText();

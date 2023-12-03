@@ -7,7 +7,12 @@ import Board from "./Board.js";
 import Scoreboard from "./Scoreboard.js";
 
 
-// Fonction pour envoyer les données vers la route /Partie
+/**
+ * Fonction pour envoyer les données vers la route /Partie
+ * @param {object} gameData - Les données du jeu.
+ * @param {string} dataBase - Le type de base de données.
+ * @returns {Promise<void>} Promise indiquant l'état de l'envoi des données.
+ */
 const sendData = async (gameData, dataBase) => {
   console.log("data sendGameData", gameData, dataBase)
   try {
@@ -16,7 +21,7 @@ const sendData = async (gameData, dataBase) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ gameData, dataBase }), // Inclure le type de base de données
+      body: JSON.stringify({ gameData, dataBase }),
     });
 
     if (response.ok) {
@@ -29,6 +34,12 @@ const sendData = async (gameData, dataBase) => {
   }
 };
 
+/**
+ * Fonction pour envoyer les données de jeu vers la route /Plays
+ * @param {object} playData - Les données de jeu.
+ * @param {string} dataBase - Le type de base de données.
+ * @returns {Promise<void>} Promise indiquant l'état de l'envoi des données.
+ */
 const sendPlay = async (playData, dataBase) => {
   console.log("data sendPlayData", playData, dataBase)
   try {
@@ -60,6 +71,12 @@ const {
   TAILLE_DECK,
 } = Global;
 
+/**
+ * Génère une carte vide.
+ * @param {number} x - Position x de la carte.
+ * @param {number} y - Position y de la carte.
+ * @returns {object} Objet représentant une carte vide.
+ */
 function no_card (x, y) {
   return {
     card: -1,
@@ -70,6 +87,9 @@ function no_card (x, y) {
   }
 }
 
+/**
+ * Fonction pour réinitialiser l'état du jeu.
+ */
 const DEFAULT_STATE = () => {
   const empty_board = [];
   for (var i = 0; i < (TAILLE_TABLEAU + 1) * (TAILLE_TABLEAU + 1); i++) {
@@ -113,6 +133,9 @@ const DEFAULT_STATE = () => {
   };
 };
 
+/**
+ * Composant principal de l'application.
+ */
 class App extends Component {
   constructor(props) {
     super(props);
@@ -125,18 +148,30 @@ class App extends Component {
     };
   }
 
+  /**
+   * Appelé après le rendu du composant.
+   */
   componentDidMount() {
     this.setup();
   }
 
+  /**
+   * Réinitialise l'état du jeu.
+   */
   reset = () => {
     this.setState(DEFAULT_STATE(), this.setup);
   };
 
+  /**
+   * Initialise le jeu.
+   */
   setup() {
     this.update_board();
   }
 
+  /**
+   * Passe au prochain tour du jeu.
+   */
   next_round = async () => {
 
     console.log("next round")
@@ -176,7 +211,7 @@ class App extends Component {
 
 
     if (gameData.manches_gagnees === 2) {
-
+      alert("Le joueur " + this.state.cur_player + " a gagné la partie !");
       if(this.state.selectedDataBase !== "MongoDB") {
         sendData(gameData, this.state.selectedDataBase)
           .then(() => {
@@ -212,6 +247,11 @@ class App extends Component {
     }
   };
 
+
+  /**
+   * Construit le plateau de jeu.
+   * @returns {object} Plateau de jeu.
+   */
   mk_board() {
     const {
       plays,
@@ -304,16 +344,32 @@ class App extends Component {
     };
   }
 
+  /**
+   * Met à jour le plateau de jeu.
+   */
   update_board() {
     const board = this.mk_board();
     this.setState({ board }, this.win_condition);
   }
 
+  /**
+   * Convertit des coordonnées 2D en coordonnées 1D.
+   * @param {number} x - Coordonnée X.
+   * @param {number} y - Coordonnée Y.
+   * @returns {number} Coordonnée 1D.
+   */
   board_coord(x, y) {
     const { dimx, dimy, minx, miny } = this.state.board;
     return coord2d1d(x - minx, y - miny, dimx, dimy);
   }
 
+  /**
+   * Vérifie si une ligne a été créée pour un joueur donné.
+   * @param {number} x - Coordonnée X.
+   * @param {number} player - Identifiant du joueur.
+   * @param {number} n_consec - Nombre de cartes consécutives nécessaires pour gagner.
+   * @returns {number[]} Cartes gagnantes.
+   */
   check_line(x, player, n_consec) {
     const { dimy, miny, board } = this.state.board;
 
@@ -348,6 +404,13 @@ class App extends Component {
     return [];
   }
 
+  /**
+   * Vérifie si une colonne a été créée pour un joueur donné.
+   * @param {number} y - Coordonnée Y.
+   * @param {number} player - Identifiant du joueur.
+   * @param {number} n_consec - Nombre de cartes consécutives nécessaires pour gagner.
+   * @returns {number[]} Cartes gagnantes.
+   */
   check_col(y, player, n_consec) {
     const { dimx, minx, board } = this.state.board;
 
@@ -381,6 +444,15 @@ class App extends Component {
     return [];
   }
 
+  /**
+   * Vérifie si une diagonale a été créée pour un joueur donné.
+   * @param {number} x - Coordonnée X.
+   * @param {number} y - Coordonnée Y.
+   * @param {number} player - Identifiant du joueur.
+   * @param {number} n_consec - Nombre de cartes consécutives nécessaires pour gagner.
+   * @param {boolean} orient - Orientation de la diagonale.
+   * @returns {number[]} Cartes gagnantes.
+   */
   check_diag(x, y, player, n_consec, orient = true) {
     // if orient is true then diag \
     // else diag /
@@ -443,6 +515,11 @@ class App extends Component {
     return [];
   }
 
+  /**
+   * Vérifie si un joueur a gagné.
+   * @param {number} n_consec Nombre de cartes consécutives nécessaires pour gagner. 
+   * @returns 
+   */
   win_condition(n_consec = 4) {
     // win_condition is called after each move, we only need to consider
     // the lines, rows and diags involving last play
@@ -472,18 +549,6 @@ class App extends Component {
       winner =
         (this.state.cur_player + this.state.n_players - 1) %
         this.state.n_players;
-    } else {
-      const remaining_cards = this.state.player_deck.map((deck) => deck.length);
-      if (
-        remaining_cards.map((n) => n <= 0).includes(true) ||
-        !this.state.board.board.map((cell) => cell.kind === "open").includes(true)
-      ) {
-        // one player has no more cards
-        const { best_card: best_card_, winner: winner_ } = this.alternative_win_condition();
-        best_card = best_card_
-        winner = winner_
-        won = true
-      }
     }
 
     if (won) {
@@ -498,51 +563,11 @@ class App extends Component {
     }
   }
 
-  alternative_win_condition() {
-    const {
-      n_players,
-      board: { minx, miny, dimx, dimy },
-    } = this.state;
-
-    const best_cards = [];
-
-    for (var p = 0; p < n_players; p++) {
-      var best_cards_p = [];
-      for (var x = minx; x < minx + dimx; x++) {
-        const best_cards_line = this.check_line(x, p, 3);
-        best_cards_p = [...best_cards_line, ...best_cards_p];
-      }
-      for (var y = miny; y < miny + dimy; y++) {
-        const best_cards_col = this.check_col(y, p, 3);
-        best_cards_p = [...best_cards_col, ...best_cards_p];
-      }
-
-      const mindim = Math.min(dimx, dimy);
-      for (var d = minx; d < minx + mindim; d++) {
-        const best_cards_diag1 = this.check_diag(dimx - d - 1, d, p, 3, true);
-        const best_cards_diag2 = this.check_diag(d, d, p, 3, false);
-        best_cards_p = [...best_cards_diag1, ...best_cards_diag2, ...best_cards_p];
-      }
-
-      best_cards.push(best_cards_p);
-    }
-
-    const n_sols = best_cards.map((a) => a.length);
-    const winner = n_sols.reduce(
-      (iMax, x, i, arr) => (x > arr[iMax] ? i : iMax),
-      0
-    );
-
-    const second_winner = n_sols.map(x => x === n_sols[winner]).includes(true)
-
-    if (best_cards[winner].length === 0 || second_winner) {
-        return { best_card: [], winner: -1 }
-    } else {
-      const best_card = Math.min(...best_cards[winner]);
-      return { best_card, winner }
-    }
-  }
-
+  /**
+   * Gère le clic sur une carte.
+   * @param {number} x coordonnées du clic 
+   * @returns 
+   */
   handle_click = ({ x, y }) => {
     const {
       n_players,
@@ -626,6 +651,10 @@ class App extends Component {
 
   get_cur_player = () => this.state.cur_player;
 
+  /**
+   * Récupère la carte courante.
+   * @returns {number} Carte courante. 
+   */
   get_cur_card = () => {
     const cur_player_deck = this.get_cur_deck();
     if (cur_player_deck && cur_player_deck.length > 0)
@@ -634,10 +663,18 @@ class App extends Component {
       return -1
   };
 
+  /**
+   * Récupère le deck courant.
+   * @returns {number[]} Deck courant.
+  */
   get_cur_deck = () => {
     return this.state.player_deck[this.get_cur_player()];
   };
 
+  /**
+   * Rendu de l'application.
+   * @returns {JSX.Element} La représentation JSX de l'application.
+   */
   render() {
     const { dimx, board } = this.state.board;
     const board_dimx = dimx * TAILLE_DECK;
