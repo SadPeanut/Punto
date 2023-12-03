@@ -54,7 +54,7 @@ const sendPlay = async (playData, dataBase) => {
 const {
   coord1d2d,
   coord2d1d,
-  shuffle,
+  melanger,
   TAILLE_TABLEAU,
   DECK,
   TAILLE_DECK,
@@ -86,8 +86,8 @@ const DEFAULT_STATE = () => {
   return {
     n_players: 4,
     cur_player: 0,
-    player_color: ["red", "cyan", "green", "yellow"],
-    player_deck: [shuffle([...DECK]), shuffle([...DECK]), shuffle([...DECK]), shuffle([...DECK])],
+    player_color: ["red", "blue", "green", "yellow"],
+    player_deck: [melanger([...DECK]), melanger([...DECK]), melanger([...DECK]), melanger([...DECK])],
     player_scores: [[], [], [], []],
     plays: [],
 

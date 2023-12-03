@@ -203,5 +203,7 @@ async function insertPlaySQLite(playsData){
 module.exports =  {
     insertPartieMongoDB,
     insertPartieMySQL,
-    insertPartieSQLite
+    insertPartieSQLite,
+    insertPlayMySQL,
+    insertPlaySQLite,
 };
