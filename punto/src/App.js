@@ -6,19 +6,17 @@ import Card from "./Card.js";
 import Board from "./Board.js";
 import Scoreboard from "./Scoreboard.js";
 
-//import sendWinnerId from "./API/apiFunctions.js";
-
 
 // Fonction pour envoyer les données vers la route /Partie
-const sendGameData = async (data, dataBase) => {
-  console.log("data sendGameData", data, dataBase)
+const sendData = async (gameData, dataBase) => {
+  console.log("data sendGameData", gameData, dataBase)
   try {
     const response = await fetch('http://localhost:5000/Partie', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ data, dataBase }), // Inclure le type de base de données
+      body: JSON.stringify({ gameData, dataBase }), // Inclure le type de base de données
     });
 
     if (response.ok) {
@@ -31,12 +29,32 @@ const sendGameData = async (data, dataBase) => {
   }
 };
 
+const sendPlay = async (playData, dataBase) => {
+  console.log("data sendPlayData", playData, dataBase)
+  try {
+    const response = await fetch('http://localhost:5000/Plays', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ playData, dataBase }), // Inclure le type de base de données
+    });
+
+    if (response.ok) {
+      console.log('Données envoyées avec succès');
+    } else {
+      console.error('Erreur lors de l\'envoi des données');
+    }
+  } catch (error) {
+    console.error('Erreur:', error);
+  }
+}
+
 
 const {
   coord1d2d,
   coord2d1d,
   shuffle,
-  rmfirstocc,
   TAILLE_TABLEAU,
   DECK,
   TAILLE_DECK,
@@ -99,6 +117,12 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = { ...DEFAULT_STATE(), selectedDataBase: "MongoDB", nbTours: 0 };
+    this.playsMongoDB = {
+      plays_joueur1: [],
+      plays_joueur2: [],
+      plays_joueur3: [],
+      plays_joueur4: []
+    };
   }
 
   componentDidMount() {
@@ -111,24 +135,6 @@ class App extends Component {
 
   setup() {
     this.update_board();
-    this.setup_decks();
-  }
-
-  setup_decks() {
-    const decks = this.state.player_deck;
-
-    for (var i = 0; i < this.state.n_players; i++) {
-      var deck = decks[i];
-      const scores = this.state.player_scores[i];
-
-      for (var score of scores) {
-        deck = rmfirstocc(deck, score);
-      }
-
-      decks[i] = deck;
-    }
-
-    this.setState({ player_decks: decks });
   }
 
   next_round = async () => {
@@ -149,21 +155,50 @@ class App extends Component {
       points_joueur3: this.state.player_scores[2].reduce((a, b) => a + b, 0),
       points_joueur4: this.state.player_scores[3].reduce((a, b) => a + b, 0),
     };
+
+    const gameDataMongo = {
+      id_joueur_gagnant: this.state.cur_player,
+      manches_gagnees: this.state.player_scores[this.state.cur_player].length,
+      nbTours: nbToursPlusUn,
+      points_joueur1: this.state.player_scores[0].reduce((a, b) => a + b, 0),
+      points_joueur2: this.state.player_scores[1].reduce((a, b) => a + b, 0),
+      points_joueur3: this.state.player_scores[2].reduce((a, b) => a + b, 0),
+      points_joueur4: this.state.player_scores[3].reduce((a, b) => a + b, 0),
+      plays_joueur1: this.playsMongoDB.plays_joueur1,
+      plays_joueur2: this.playsMongoDB.plays_joueur2,
+      plays_joueur3: this.playsMongoDB.plays_joueur3,
+      plays_joueur4: this.playsMongoDB.plays_joueur4,
+    };
+
     this.setup()
 
-    console.log(gameData)
+    console.log(gameData);
 
 
     if (gameData.manches_gagnees === 2) {
-      sendGameData(gameData, this.state.selectedDataBase)
-        .then(() => {
-          // Si les données sont envoyées avec succès, réinitialise les scores
-          const emptyScores = [[], [], [], []];
-          this.setState({ player_scores: emptyScores });
-        })
-        .catch((error) => {
-          console.error('Erreur lors de l\'envoi des données :', error);
-        });
+
+      if(this.state.selectedDataBase !== "MongoDB") {
+        sendData(gameData, this.state.selectedDataBase)
+          .then(() => {
+            // Si les données sont envoyées avec succès, réinitialise les scores
+            const emptyScores = [[], [], [], []];
+            this.setState({ player_scores: emptyScores });
+          })
+          .catch((error) => {
+            console.error('Erreur lors de l\'envoi des données :', error);
+          });
+        }else{
+          
+          sendData(gameDataMongo, this.state.selectedDataBase)
+          .then(() => {
+            // Si les données sont envoyées avec succès, réinitialise les scores
+            const emptyScores = [[], [], [], []];
+            this.setState({ player_scores: emptyScores });
+          })
+          .catch((error) => {
+            console.error('Erreur lors de l\'envoi des données :', error);
+          });
+        }
     }
 
     try {
@@ -517,6 +552,40 @@ class App extends Component {
       virtual_board: { minx, maxx, miny, maxy },
     } = this.state;
     const card = this.get_cur_card();
+
+    const playData = {
+      id_Partie: null,
+      id_joueur: cur_player,
+      x: x,
+      y: y,
+      carte: card
+    }
+
+    if(this.state.selectedDataBase !== "MongoDB") {
+      try{
+        sendPlay(playData, this.state.selectedDataBase)
+          .then(() => {
+            // Si les données sont envoyées avec succès, réinitialise les scores
+            console.log("Données envoyées avec succès");
+          })
+          .catch((error) => {
+            console.error('Erreur lors de l\'envoi des données play :', error);
+          });
+      }catch (error){
+        console.error('Erreur lors de l\'envoi des données play :', error);
+      }
+
+    }else{
+      if(cur_player === 0){
+        this.playsMongoDB.plays_joueur1.push([playData.x, playData.y]);
+      }else if(cur_player === 1){
+        this.playsMongoDB.plays_joueur2.push([playData.x, playData.y]);
+      }else if(cur_player === 2){
+        this.playsMongoDB.plays_joueur3.push([playData.x, playData.y]);
+      }else if(cur_player === 3){
+        this.playsMongoDB.plays_joueur4.push([playData.x, playData.y]);
+      }
+    }
 
     var prev_play_idx = -1;
     for (var i = 0; i < plays.length; i++) {

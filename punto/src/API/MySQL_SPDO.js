@@ -16,7 +16,7 @@ class MySQL_SPDO {
             charset: 'utf8mb4'
         });
     }
-
+    
     static getInstance() {
         if (!this.instance) {
             this.instance = new MySQL_SPDO();
@@ -34,6 +34,8 @@ class MySQL_SPDO {
             });
         });
     }
+
+    
 
     async query(query, params = []) {
     try {

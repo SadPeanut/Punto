@@ -9,7 +9,11 @@ const PartieSchema = new mongoose.Schema({
     points_joueur1: Number,
     points_joueur2: Number,
     points_joueur3: Number,
-    points_joueur4: Number
+    points_joueur4: Number,
+    plays_joueur1: Array,
+    plays_joueur2: Array,
+    plays_joueur3: Array,
+    plays_joueur4: Array
 });
 
 // Enregistrement du schéma en tant que modèle
