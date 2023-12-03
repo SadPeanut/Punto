@@ -6,6 +6,16 @@ Règles complètes du Punto: https://montvalsurloir.bibli.fr/doc_num.php?explnum
 
 ## Installation
 
+
+### Présentation du projet
+Ce projet a été réalisé dans le cadre de la formation BUT3 Informatique à l'IUT de Vannes, dans le module "Nouveaux paradigmes de bases de données".
+Il a été réalisé par : Lucas TORRI, 3ème année.
+
+Le framework utilisé pour ce projet est React.js, et l'API est réalisée en Node.js.
+Les bases de données utilisées sont MySQL, MongoDB et SQLite.
+Les ports utilisés sont le 3000 pour l'application et le 5000 pour l'API.
+
+
 ### Prérequis
 - Node.js
 - Git
