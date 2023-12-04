@@ -96,12 +96,13 @@ async function insertPlayMySQL(playsData) {
             VALUES (?, ?, ?, ?, ?)
         `;
 
-        const lastIDQuery  = 'SELECT MAX(id_partie) FROM partie';
-
-        const lastID = await db.query(lastIDQuery);
+        const lastIDQuery  = 'SELECT MAX(id_partie) as maxId FROM partie';
+        const lastID1 = await db.query(lastIDQuery);
+        const lastID2 = lastID1[0].maxId;
+        console.log("lastID2 : " + lastID2);
 
         const result = await db.query(insertQuery, [
-            lastID,
+            lastID2,
             playsData.id_joueur,
             playsData.x,
             playsData.y,

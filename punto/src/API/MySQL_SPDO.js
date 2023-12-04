@@ -1,9 +1,10 @@
+
 const mysql = require('mysql');
 
 class MySQL_SPDO {
     constructor() {
         const host = '127.0.0.1';
-        const db = 'BDD_Punto_MySQL';
+        const db = 'bdd_punto_mysql';
         const user = 'root';
         const pass = 'root';
 
@@ -36,7 +37,7 @@ class MySQL_SPDO {
     }
 
     
-
+/*
     async query(query, params = []) {
     try {
         const connection = await this.getConnection();
@@ -70,6 +71,55 @@ class MySQL_SPDO {
         throw new Error("Erreur lors de la requête SQL : " + error.message);
     }
 }
+*/
+
+
+async query(query, params = []) {
+    try {
+        const connection = await this.getConnection();
+        const result = await new Promise((resolve, reject) => {
+            connection.query(query, params, (err, rows) => {
+                connection.release();
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(rows);
+                }
+            });
+        });
+
+        // Check if the query was a SELECT query
+        const isSelectQuery = query.trim().toUpperCase().startsWith('SELECT');
+        
+        // For SELECT queries, return the result directly
+        if (isSelectQuery) {
+            return result;
+        }
+
+        // For other queries, handle affectedRows and insertId
+        let lastInsertId = null;
+        let rowCount = null;
+
+        if (query.trim().toUpperCase().startsWith('INSERT')) {
+            rowCount = result.affectedRows;
+            lastInsertId = result.insertId;
+        } else {
+            rowCount = result.length;
+        }
+
+        if (lastInsertId !== null) {
+            return { rowCount, lastInsertId };
+        } else {
+            return rowCount;
+        }
+    } catch (error) {
+        throw new Error("Erreur lors de la requête SQL : " + error.message);
+    }
+}
+
+
+
+
 }
 
 module.exports = MySQL_SPDO;
