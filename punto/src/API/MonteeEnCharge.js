@@ -9,6 +9,8 @@ const { insertPlaySQLite } = require("./api.js");
 function generateRandomData() {
     return {
         id_joueur_gagnant: Math.floor(Math.random() * 3), // Génère un nombre aléatoire entre 0 et 99 pour l'id_joueur_gagnant
+        dateDebut: new Date(), // Date actuelle pour dateDebut
+        dateFin: new Date(), // Date actuelle pour dateFin
         manches_gagnees: 2, // Génère un nombre aléatoire entre 0 et 9 pour les manches_gagnees
         nbTours: Math.floor(Math.random() * 20), // Génère un nombre aléatoire entre 0 et 19 pour nbTours
         points_joueur1: Math.floor(Math.random() * 50), // Génère un nombre aléatoire entre 0 et 49 pour les points_joueur1
@@ -33,6 +35,8 @@ function generateRandomDataMongo() {
     
     return {
         id_joueur_gagnant: Math.floor(Math.random() * 3), // Génère un nombre aléatoire entre 0 et 2 pour l'id_joueur_gagnant
+        dateDebut: new Date(), // Date actuelle pour dateDebut
+        dateFin: new Date(), // Date actuelle pour dateFin
         manches_gagnees: 2, // Valeur fixe pour manches_gagnees
         nbTours: Math.floor(Math.random() * 20), // Génère un nombre aléatoire entre 0 et 19 pour nbTours
         points_joueur1: Math.floor(Math.random() * 50), // Génère un nombre aléatoire entre 0 et 49 pour les points_joueur1

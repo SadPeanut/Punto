@@ -63,11 +63,21 @@ async function insertPartieMySQL(gameData) {
     try {
         const insertQuery = `
             INSERT INTO partie 
-            (id_joueur_gagnant, manches_gagnees, nbTours, points_joueur1, points_joueur2, points_joueur3, points_joueur4) 
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            (id_joueur_gagnant, dateDebut, dateFin, manches_gagnees, nbTours, points_joueur1, points_joueur2, points_joueur3, points_joueur4) 
+            VALUES (?, ?, ?, ?, ?, ?, ? ,? ,?)
         `;
+
+        const dateDebutSQL = new Date(gameData.dateDebut).toISOString().slice(0, 23).replace('T', ' ');
+        const dateFinSQL = new Date(gameData.dateFin).toISOString().slice(0, 23).replace('T', ' ');
+
+        console.log("dateDebutSQL : " + dateDebutSQL);
+        console.log("dateFinSQL : " + dateFinSQL);
+
+
         const result = await db.query(insertQuery, [
             gameData.id_joueur_gagnant,
+            dateDebutSQL,
+            dateFinSQL,
             gameData.manches_gagnees,
             gameData.nbTours,
             gameData.points_joueur1,
@@ -153,11 +163,21 @@ async function insertPartieSQLite(gameData){
     try {
         const insertQuery = `
             INSERT INTO Partie 
-            (id_joueur_gagnant, manches_gagnees, nbTours, points_joueur1, points_joueur2, points_joueur3, points_joueur4) 
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            (id_joueur_gagnant, dateDebut, dateFin, manches_gagnees, nbTours, points_joueur1, points_joueur2, points_joueur3, points_joueur4) 
+            VALUES (?, ?, ?, ?, ?, ?, ? ,? ,?)
         `;
+
+        const dateDebutSQL = new Date(gameData.dateDebut).toISOString().slice(0, 23).replace('T', ' ');
+        const dateFinSQL = new Date(gameData.dateFin).toISOString().slice(0, 23).replace('T', ' ');
+
+        console.log("dateDebutSQL : " + dateDebutSQL);
+        console.log("dateFinSQL : " + dateFinSQL);
+
+
         const result = await db.query(insertQuery, [
             gameData.id_joueur_gagnant,
+            dateDebutSQL,
+            dateFinSQL,
             gameData.manches_gagnees,
             gameData.nbTours,
             gameData.points_joueur1,
