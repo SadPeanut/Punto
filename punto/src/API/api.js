@@ -123,6 +123,8 @@ async function insertPartieMongoDB(gameData) {
     console.log("MongoDB Data", gameData);
     
     const donnees = {
+        dateDebut: gameData.dateDebut,
+        dateFin: gameData.dateFin,
         id_joueur_gagnant: gameData.id_joueur_gagnant,
         manches_gagnees: gameData.manches_gagnees,
         nbTours: gameData.nbTours,

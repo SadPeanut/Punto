@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 
 // Définition du schéma pour la collection "Partie"
 const PartieSchema = new mongoose.Schema({
+    dateDebut: Date,
+    dateFin: Date,
     id_joueur_gagnant: Number,
     manches_gagnees: Number,
     nbTours: Number,

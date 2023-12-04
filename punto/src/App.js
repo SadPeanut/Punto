@@ -6,7 +6,6 @@ import Card from "./Card.js";
 import Board from "./Board.js";
 import Scoreboard from "./Scoreboard.js";
 
-
 /**
  * Fonction pour envoyer les données vers la route /Partie
  * @param {object} gameData - Les données du jeu.
@@ -139,7 +138,7 @@ const DEFAULT_STATE = () => {
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { ...DEFAULT_STATE(), selectedDataBase: "MongoDB", nbTours: 0 };
+    this.state = { ...DEFAULT_STATE(), selectedDataBase: "MongoDB", nbTours: 0 , dateDebut: 0};
     this.playsMongoDB = {
       plays_joueur1: [],
       plays_joueur2: [],
@@ -182,6 +181,8 @@ class App extends Component {
     this.setState({nbTours: nbToursPlusUn});
 
     const gameData = {
+      dateDebut: this.state.dateDebut,
+      dateFin: new Date(),
       id_joueur_gagnant: this.state.cur_player,
       manches_gagnees: this.state.player_scores[this.state.cur_player].length,
       nbTours: nbToursPlusUn,
@@ -192,6 +193,8 @@ class App extends Component {
     };
 
     const gameDataMongo = {
+      dateDebut: this.state.dateDebut,
+      dateFin: new Date(),
       id_joueur_gagnant: this.state.cur_player,
       manches_gagnees: this.state.player_scores[this.state.cur_player].length,
       nbTours: nbToursPlusUn,
@@ -205,6 +208,7 @@ class App extends Component {
       plays_joueur4: this.playsMongoDB.plays_joueur4,
     };
 
+    this.setState({dateDebut: 0});
     this.setup()
 
     console.log(gameData);
@@ -578,6 +582,10 @@ class App extends Component {
     } = this.state;
     const card = this.get_cur_card();
 
+    if (this.state.dateDebut === 0){
+      this.setState({dateDebut: new Date()});
+    }
+
     const playData = {
       id_Partie: null,
       id_joueur: cur_player,
@@ -684,6 +692,7 @@ class App extends Component {
     const { selectedDataBase } = this.state;
     return (
       <div className="punto">
+
         <header>
           <div className="menu">
             <input type="button" value="Réinitialiser" onClick={this.reset}/>
